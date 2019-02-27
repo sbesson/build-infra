@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+MERGE_OPTIONS=${MERGE_OPTIONS:-"-vvv --no-ask --reset"}
+STATUS=${STATUS:-"success-only"}
+PUSH_BRANCH=${PUSH_BRANCH:-"merge"}
+BASE_BRANCH=${BASE_BRANCH:-"master"}
+BASE_REPO=${BASE_REPO:-$(basename $PWD).git}
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+PATH=$DIR:$HOME/.local/bin:$PATH
+
+set -e
+set -u
+
+echo "Merge base repository (no submodule updates)"
+scc merge $MERGE_OPTIONS --shallow $BASE_BRANCH
+
+# Update any changed submodules
+git submodule sync
+git submodule update --remote --recursive
+
+echo "Merge all submodules using repository configuration:"
+cat "scripts/repositories.yml"
+scc merge "--repository-config=repositories.yml" $MERGE_OPTIONS -S $STATUS --update-gitmodules --push $PUSH_BRANCH $BASE_BRANCH
+
+echo "Update maven component versions"
+update-versions
+
+echo "Commit all component version changes"
+git submodule foreach "git add -u"
+git submodule foreach "git commit -m 'Update component versions' || true"
+
+echo "Push all branches"
+user=$(git config github.user)
+git submodule foreach "git push -f git@github.com:$user/"'${path}.git'" HEAD:$PUSH_BRANCH"
+
+echo "Commit all component version changes"
+git add -u
+git commit -m 'Update component versions' || true
+
+git push -f git@github.com:$user/${BASE_REPO} HEAD:$PUSH_BRANCH

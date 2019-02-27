@@ -1,0 +1,2 @@
+ - requires scc
+ - repositories.yml in target directory
