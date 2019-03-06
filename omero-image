@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+set -u
+set -x
+
+# build-infra/recursive-merge # Updates versions
+printf "travis_fold:start:bump-versions\n"
+git submodule foreach "sed -ie 's/\(omero-.*:5.5.0\)-m3/\1-SNAPSHOT/' build.gradle"
+# For the moment: hard-coding these properties
+echo versions.omero-blitz=5.5.0-SNAPSHOT >> openmicroscopy/etc/omero.properties
+echo versions.omero-common-test=5.5.0-SNAPSHOT >> openmicroscopy/etc/omero.properties
+printf "travis_fold:end:bump-versions\n"
+
+printf "travis_fold:start:build-image\n"
+docker build -t omero-build .
+printf "travis_fold:end:build-image\n"
