@@ -1,0 +1,13 @@
+
+# Before beginning, call the prevous end_phase if it exists
+type end_phase &>/dev/null && end_phase
+
+# Get the new phase, and print
+step=$1; shift
+printf "travis_fold:start:$step\n"
+
+# Register a cleanup in case this doesn't get called
+end_phase(){
+    printf "travis_fold:end:$step\n"
+}
+trap end_phase EXIT

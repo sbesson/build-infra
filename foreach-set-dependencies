@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+VERSION_LOG=`mktemp`
+trap "{ rm -f $VERSION_LOG; }" EXIT
+
+foreach-get-version > $VERSION_LOG
+git submodule foreach -q $PWD/openmicroscopy/.build/gradle-set-dependencies $VERSION_LOG

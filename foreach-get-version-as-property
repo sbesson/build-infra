@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+foreach-get-version | while IFS=$'\t' read -r -a v
+do
+    printf "versions.${v[1]}=${v[2]}\n"
+done

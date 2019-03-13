@@ -1,0 +1,8 @@
+foreach-get-version | while IFS=$'\t' read -r -a v
+do
+    version="${v[2]}"
+    if [ "${v[2]}" != *SNAPSHOT ]; then
+        version=$(echo "$version" | cut -f1 -d"-")-SNAPSHOT
+    fi
+    printf "${v[0]}\t${v[1]}\t$version\n"
+done
