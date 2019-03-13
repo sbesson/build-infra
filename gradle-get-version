@@ -1,0 +1,3 @@
+printf "$(grep -E ^group build.gradle | cut -f2 -d= | tr -cd 'a-zA-Z-.')\t"
+printf "$(grep -E ^rootProject.name settings.gradle | cut -f2 -d= | tr -cd 'a-zA-Z-.')\t"
+printf "$(grep -E ^version build.gradle | cut -f2 -d= | tr -cd '0-9a-zA-Z-.')\n"
