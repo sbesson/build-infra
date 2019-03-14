@@ -9,7 +9,7 @@ GIT_HOST=${GIT_HOST:-"git@github.com"}
 GIT_USER=${GIT_USER:-$(git config github.user)}
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-PATH=$DIR:$HOME/.local/bin:$PATH
+PATH=$DIR:$PATH
 
 set -e
 set -u
