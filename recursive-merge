@@ -30,8 +30,8 @@ if [ -f "scripts/repositories.yml" ]; then
 fi
 scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules --push $PUSH_BRANCH $BASE_BRANCH
 
-echo "Update maven component versions"
-update-versions
+echo "Update component versions"
+foreach-set-dependencies
 
 echo "Commit all component version changes"
 git submodule foreach "git add -u"
