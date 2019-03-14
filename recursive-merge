@@ -21,9 +21,14 @@ scc merge $MERGE_OPTIONS --shallow $BASE_BRANCH
 git submodule sync
 git submodule update --remote --recursive
 
-echo "Merge all submodules using repository configuration:"
-cat "scripts/repositories.yml"
-scc merge "--repository-config=repositories.yml" $MERGE_OPTIONS -S $STATUS --update-gitmodules --push $PUSH_BRANCH $BASE_BRANCH
+REPO_CONFIG=
+echo -n "Merge all submodules"
+if [ -f "scripts/repositories.yml" ]; then
+    echo " using repository configuration:"
+    cat "scripts/repositories.yml"
+    REPO_CONFIG="--repository-config=repositories.yml"
+fi
+scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules --push $PUSH_BRANCH $BASE_BRANCH
 
 echo "Update maven component versions"
 update-versions
