@@ -5,6 +5,8 @@ STATUS=${STATUS:-"success-only"}
 PUSH_BRANCH=${PUSH_BRANCH:-"merge"}
 BASE_BRANCH=${BASE_BRANCH:-"master"}
 BASE_REPO=${BASE_REPO:-$(basename $PWD).git}
+GIT_HOST=${GIT_HOST:-"git@github.com"}
+GIT_USER=${GIT_USER:-$(git config github.user)}
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PATH=$DIR:$HOME/.local/bin:$PATH
@@ -31,11 +33,10 @@ git submodule foreach "git add -u"
 git submodule foreach "git commit -m 'Update component versions' || true"
 
 echo "Push all branches"
-user=$(git config github.user)
-git submodule foreach "git push -f git@github.com:$user/"'${path}.git'" HEAD:$PUSH_BRANCH"
+git submodule foreach "git push -f $GIT_HOST:$GIT_USER/"'${path}.git'" HEAD:refs/heads/$PUSH_BRANCH"
 
 echo "Commit all component version changes"
 git add -u
 git commit -m 'Update component versions' || true
 
-git push -f git@github.com:$user/${BASE_REPO} HEAD:$PUSH_BRANCH
+git push -f $GIT_HOST:$GIT_USER/${BASE_REPO} HEAD:refs/heads/$PUSH_BRANCH
