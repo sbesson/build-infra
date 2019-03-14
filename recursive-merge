@@ -28,7 +28,7 @@ if [ -f "scripts/repositories.yml" ]; then
     cat "scripts/repositories.yml"
     REPO_CONFIG="--repository-config=repositories.yml"
 fi
-scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules --push $PUSH_BRANCH $BASE_BRANCH
+scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules $BASE_BRANCH
 
 echo "Update component versions"
 foreach-set-dependencies
