@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-gradle-get-dependencies | while IFS=$'\t' read -r -a source
+gradle-get-version | while IFS=$'\t' read -r -a source
 do
     cat $1 | while IFS=$'\t' read -r -a target
     do
@@ -10,10 +10,9 @@ do
             if [[ "${source[2]}" != "${target[2]}" ]];
             then
                echo "Updating ${target[1]}"
-               PATTERN="s"
-               PATTERN="$PATTERN/${source[0]}:${source[1]}:${source[2]}"
-               PATTERN="$PATTERN/${target[0]}:${target[1]}:${target[2]}/"
-               sed -ie $PATTERN build.gradle
+               PATTERN="s/^version = '${source[2]}'/version = '${target[2]}'/"
+               PATTERN=$(echo $PATTERN | tr \' \")
+               sed -ie "$PATTERN" build.gradle
             else
                echo "Up-to-date: ${target[1]}"
             fi

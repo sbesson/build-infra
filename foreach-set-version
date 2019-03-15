@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+VERSION_LOG=`mktemp`
+trap "{ rm -f $VERSION_LOG; }" EXIT
+
+cat - > $VERSION_LOG
+git submodule foreach -q gradle-set-version $VERSION_LOG
