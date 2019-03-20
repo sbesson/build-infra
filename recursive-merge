@@ -5,8 +5,17 @@ STATUS=${STATUS:-"success-only"}
 PUSH_BRANCH=${PUSH_BRANCH:-"merge"}
 BASE_BRANCH=${BASE_BRANCH:-"master"}
 BASE_REPO=${BASE_REPO:-$(basename $PWD).git}
-GIT_HOST=${GIT_HOST:-"git@github.com"}
+GIT_HOST=${GIT_HOST:-}
 GIT_USER=${GIT_USER:-$(git config github.user)}
+
+# scc can only push to GitHub
+if [ -n "$GIT_HOST" ]; then
+    SCC_PUSH=
+else
+    GIT_HOST=git@github.com
+    SCC_PUSH="--push $PUSH_BRANCH"
+fi
+
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PATH=$DIR:$PATH
@@ -28,7 +37,7 @@ if [ -f "scripts/repositories.yml" ]; then
     cat "scripts/repositories.yml"
     REPO_CONFIG="--repository-config=repositories.yml"
 fi
-scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules $BASE_BRANCH
+scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules $SCC_PUSH $BASE_BRANCH
 
 echo "Update component versions"
 foreach-set-dependencies
