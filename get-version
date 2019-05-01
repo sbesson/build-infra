@@ -1,0 +1,5 @@
+if [ -f "pom.xml" ]; then
+  maven-get-version
+else
+  gradle-get-version
+fi

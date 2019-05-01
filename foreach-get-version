@@ -1,1 +1,1 @@
-git submodule foreach -q gradle-get-version
+git submodule foreach -q get-version
