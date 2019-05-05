@@ -1,5 +1,5 @@
 if [ -f "pom.xml" ]; then
-  maven-get-version
+  python $(dirname $0)/maven.py
 else
   gradle-get-version
 fi
