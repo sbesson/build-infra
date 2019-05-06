@@ -1,1 +1,0 @@
- mvn -q -Dexec.executable="printf" -Dexec.args='${project.groupId}\t${project.artifactId}\t${project.version}\n' exec:exec

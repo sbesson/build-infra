@@ -1,1 +1,5 @@
-git submodule foreach -q get-version
+if [ -f "pom.xml" ]; then
+  python $(dirname $0)/maven.py --recursive
+else
+  git submodule foreach -q gradle-get-version
+fi
