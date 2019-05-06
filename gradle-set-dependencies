@@ -4,19 +4,22 @@ gradle-get-dependencies | while IFS=$'\t' read -r -a source
 do
     cat $1 | while IFS=$'\t' read -r -a target
     do
-        if [[ "${source[0]}" == "${target[0]}"  && \
-              "${source[1]}" == "${target[1]}" ]];
-        then
-            if [[ "${source[2]}" != "${target[2]}" ]];
+        for suffix in "" "-test";
+        do
+            if [[ "${source[0]}" == "${target[0]}"  && \
+                  "${source[1]}" == "${target[1]}${suffix}" ]];
             then
-               echo "Updating ${target[1]}"
-               PATTERN="s"
-               PATTERN="$PATTERN/${source[0]}:${source[1]}:${source[2]}"
-               PATTERN="$PATTERN/${target[0]}:${target[1]}:${target[2]}/"
-               sed -ie $PATTERN build.gradle
-            else
-               echo "Up-to-date: ${target[1]}"
+                if [[ "${source[2]}" != "${target[2]}" ]];
+                then
+                   echo "Updating ${target[1]}${suffix} from ${source[2]} to ${target[2]}"
+                   PATTERN="s"
+                   PATTERN="$PATTERN/${source[0]}:${source[1]}:${source[2]}"
+                   PATTERN="$PATTERN/${target[0]}:${target[1]}${suffix}:${target[2]}/"
+                   sed -ie $PATTERN build.gradle
+                else
+                   echo "Up-to-date: ${target[1]}${suffix}"
+                fi
             fi
-        fi
+        done
     done
 done
