@@ -1,1 +1,1 @@
-printf "$(grep 'ome:\|org.openmicroscopy:' build.gradle | sed 's/^.*\(org.openmicroscopy.*\)$/\1/' | sed 's/^.*\(ome.*\)$/\1/' | tr -cd '0-9a-zA-Z-.:\n' | tr : '\t')\n"
+printf "$(grep 'ome:\|org.openmicroscopy:' build.gradle | sed 's/^.*\(org.openmicroscopy:.*\)$/\1/' | sed 's/^.*\(ome:.*\)$/\1/' | tr -cd '0-9a-zA-Z-.:\n' | tr : '\t')\n"
