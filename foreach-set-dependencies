@@ -7,3 +7,5 @@ fi
 
 foreach-get-version >> $VERSION_LOG
 git submodule foreach -q gradle-set-dependencies $VERSION_LOG
+get-version >> $VERSION_LOG
+gradle-set-dependencies $VERSION_LOG
