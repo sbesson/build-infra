@@ -4,6 +4,8 @@ set -e
 
 # Requirements: some gradle installation above 3.x
 
+maven_args=${maven_args:-install}
+gradle_args=${gradle_args:-publishToMavenLocal}
 url=${url:-git://github.com/snoopycrimecop/omero-build}
 branch=${branch:-west_merge_trigger}
 output=$1
@@ -27,12 +29,16 @@ echo "Downloading ${url}@${branch} in ${temp}"
 git clone -b "${branch}" "${url}" src
 
 cd src
-if test -e gradle;
-then
-    echo "Using existing gradle wrapper"
+if [ -f "pom.xml" ]; then
+    mvn "${maven_args}"
 else
-    DIR="${PWD}"; (cd "${TMPDIR}"; gradle wrapper --gradle-version=5.2.1; mv .gradle gradle gradlew "${DIR}")
+    if test -e gradle;
+    then
+        echo "Using existing gradle wrapper"
+    else
+        DIR="${PWD}"; (cd "${TMPDIR}"; gradle wrapper --gradle-version=5.2.1; mv .gradle gradle gradlew "${DIR}")
+    fi
+    ./gradlew ${gradle_args}
 fi
 git submodule update --init
-./gradlew publishToMavenLocal
 foreach-get-version-as-property >&4
