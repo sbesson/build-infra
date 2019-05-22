@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+import argparse
+import json
+import re
+import requests
+import sys
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--url", default="https://ci.openmicroscopy.org/api/json")
+ns = parser.parse_args()
+
+
+URL = ns.url.endswith("/") and ns.url or (ns.url + "/")
+JOB = "%sjob/BIOFORMATS-test-folder/%%s/api/json" % URL
+URL = "%sjob/BIOFORMATS-test-repo/lastBuild/consoleText" % URL
+RXP = r"Starting building\: [\w-]+ \#(\d+)"
+FMT = "%8s\t%-20s\t%8s\t%s"
+
+try:
+    r = requests.get(URL)
+    stats = []
+    errors = list()
+    for jid in map(long, re.findall(RXP, r.content)):
+        job = requests.get(JOB % jid).content
+        dat = json.loads(job)
+        name = dat.pop("displayName")
+        building = dat.pop("building")
+        result = dat.pop("result")
+        if result not in ("SUCCESS", None):
+            errors.append(jid)
+        est = dat.pop("estimatedDuration")
+        dur = dat.pop("duration")
+        actions = dat.pop("actions")
+        format_name = "unknown"
+        for action in actions:
+            if "parameters" in action:
+                for param in action["parameters"]:
+                    if param.get("name") == "FORMAT_NAME":
+                        format_name = param.get("value")
+        stats.append((format_name, jid, result, dur))
+    stats.sort()
+
+    print FMT % ("JOB_ID", "FORMAT_NAME", "RESULT", "DURATION")
+    for format_name, jid, result, dur in stats:
+        print FMT % (jid, format_name, result, dur)
+
+    sys.exit(len(errors))
+except KeyboardInterrupt:
+    sys.exit(-1)
