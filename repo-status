@@ -16,12 +16,22 @@ URL = "%sjob/BIOFORMATS-test-repo/lastBuild/consoleText" % URL
 RXP = r"Starting building\: [\w-]+ \#(\d+)"
 FMT = "%8s\t%-20s\t%8s\t%s"
 
+
+def get_content(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        msg = "failed to load: %s\n" % url
+        msg += "content: %s" % r.content
+        raise Exception(msg)
+    else:
+        return r.content
+
 try:
-    r = requests.get(URL)
+    text = get_content(URL)
     stats = []
     errors = list()
-    for jid in map(long, re.findall(RXP, r.content)):
-        job = requests.get(JOB % jid).content
+    for jid in map(long, re.findall(RXP, text)):
+        job = get_content(JOB % jid)
         dat = json.loads(job)
         name = dat.pop("displayName")
         building = dat.pop("building")
