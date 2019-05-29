@@ -27,8 +27,9 @@ trap cleanup EXIT
 cd "${temp}"
 echo "Downloading ${url}@${branch} in ${temp}"
 git clone -b "${branch}" "${url}" src
-
 cd src
+git submodule update --init
+
 if [ -f "pom.xml" ]; then
     mvn "${maven_args}"
 else
