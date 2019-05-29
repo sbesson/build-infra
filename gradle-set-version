@@ -12,7 +12,7 @@ do
                echo "Updating ${target[1]}"
                PATTERN="s/^version = '${source[2]}'/version = '${target[2]}'/"
                PATTERN=$(echo $PATTERN | tr \' \")
-               sed -ie "$PATTERN" build.gradle
+               sed -i "$PATTERN" build.gradle
             else
                echo "Up-to-date: ${target[1]}"
             fi
