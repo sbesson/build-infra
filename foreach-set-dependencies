@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-VERSION_LOG=`mktemp`
-trap "{ rm -f $VERSION_LOG; }" EXIT
+if [ -z "VERSION_LOG" ]; then
+    VERSION_LOG=`mktemp`
+    trap "{ rm -f $VERSION_LOG; }" EXIT
+fi
 
-foreach-get-version > $VERSION_LOG
+foreach-get-version >> $VERSION_LOG
 git submodule foreach -q gradle-set-dependencies $VERSION_LOG
+get-version >> $VERSION_LOG
+gradle-set-dependencies $VERSION_LOG

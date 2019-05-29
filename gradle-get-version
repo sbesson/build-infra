@@ -1,3 +1,11 @@
+#!/usr/bin/env bash
+
 printf "$(grep -E ^group build.gradle | cut -f2 -d= | tr -cd 'a-zA-Z-.')\t"
 printf "$(grep -E ^rootProject.name settings.gradle | cut -f2 -d= | tr -cd 'a-zA-Z-.')\t"
 printf "$(grep -E ^version build.gradle | cut -f2 -d= | tr -cd '0-9a-zA-Z-.')\n"
+if [[ -e publish.gradle && $(sed -n '/mavenTestJava/p' 'publish.gradle') ]]
+then
+    printf "$(grep -E ^group build.gradle | cut -f2 -d= | tr -cd 'a-zA-Z-.')\t"
+    printf "$(grep -E ^rootProject.name settings.gradle | cut -f2 -d= | tr -cd 'a-zA-Z-.')-test\t"
+    printf "$(grep -E ^version build.gradle | cut -f2 -d= | tr -cd '0-9a-zA-Z-.')\n"
+fi
