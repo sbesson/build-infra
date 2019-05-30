@@ -5,7 +5,11 @@ if [ -z "VERSION_LOG" ]; then
     trap "{ rm -f $VERSION_LOG; }" EXIT
 fi
 
-foreach-get-version >> $VERSION_LOG
-git submodule foreach -q gradle-set-dependencies $VERSION_LOG
-get-version >> $VERSION_LOG
-gradle-set-dependencies $VERSION_LOG
+if test -e .gitmodules;
+then
+    foreach-get-version >> $VERSION_LOG
+    git submodule foreach -q gradle-set-dependencies $VERSION_LOG
+else
+    get-version >> $VERSION_LOG
+    gradle-set-dependencies $VERSION_LOG
+fi
