@@ -7,7 +7,7 @@ set -e
 maven_args=${maven_args:-install}
 gradle_args=${gradle_args:-publishToMavenLocal}
 url=${url:-git://github.com/snoopycrimecop/omero-build}
-branch=${branch:-south_merge_trigger}
+branch=${branch:-merge_ci}
 output=$1
 exec 4>${output}
 
