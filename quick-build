@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -e
+
+# Requirements: some gradle installation above 3.x
+
+maven_args=${maven_args:-install}
+gradle_args=${gradle_args:-publishToMavenLocal}
+url=${url:-git://github.com/snoopycrimecop/omero-build}
+branch=${branch:-south_merge_trigger}
+output=$1
+exec 4>${output}
+
+temp=$(mktemp -d)
+if    ls -1qA "${temp}" | grep -q .
+then
+    echo "${temp}" is not empty
+    exit 2
+fi
+
+cleanup() {
+    rm -rf "${temp}"
+}
+
+trap cleanup EXIT
+
+cd "${temp}"
+echo "Downloading ${url}@${branch} in ${temp}"
+git clone -b "${branch}" "${url}" src
+cd src
+git submodule update --init
+
+if [ -f "pom.xml" ]; then
+    mvn "${maven_args}"
+else
+    if test -e gradle;
+    then
+        echo "Using existing gradle wrapper"
+    else
+        DIR="${PWD}"; (cd "${TMPDIR}"; gradle wrapper --gradle-version=5.2.1; mv .gradle gradle gradlew "${DIR}")
+    fi
+    ./gradlew ${gradle_args}
+fi
+git submodule update --init
+foreach-get-version-as-property >&4
