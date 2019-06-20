@@ -41,7 +41,7 @@ else
     else
         DIR="${PWD}"; (cd "${TMPDIR}"; gradle wrapper --gradle-version=5.2.1; mv .gradle gradle gradlew "${DIR}")
     fi
-    ./gradlew ${gradle_args}
+    ./gradlew ${gradle_args} -x javadoc -x test
 fi
 git submodule update --init
 foreach-get-version-as-property >&4
