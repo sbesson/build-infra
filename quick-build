@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 # Requirements: some gradle installation above 3.x
 
