@@ -5,6 +5,7 @@ set -x
 
 # Requirements: some gradle installation above 3.x
 
+export TMPDIR=${TMPDIR:-"/tmp"} # Needed on travis
 maven_args=${maven_args:-install}
 gradle_args=${gradle_args:-publishToMavenLocal}
 url=${url:-git://github.com/snoopycrimecop/omero-build}
