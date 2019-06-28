@@ -32,11 +32,14 @@ git submodule update --remote --recursive
 
 REPO_CONFIG=
 echo -n "Merge all submodules"
-if [ -f "scripts/repositories.yml" ]; then
-    echo " using repository configuration:"
-    cat "scripts/repositories.yml"
-    REPO_CONFIG="--repository-config=repositories.yml"
-fi
+for yml in scripts/repositories.yml repositories.yml;
+do
+    if [ -f "${yml}" ]; then
+        echo " using repository configuration:"
+        cat "${yml}"
+        REPO_CONFIG="--repository-config=${yml}"
+    fi
+done
 scc merge $REPO_CONFIG $MERGE_OPTIONS -S $STATUS --update-gitmodules $SCC_PUSH $BASE_BRANCH
 
 echo "Update component versions"
