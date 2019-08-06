@@ -50,7 +50,7 @@ git submodule foreach "git add -u"
 git submodule foreach "git commit -m 'Update component versions' || true"
 
 echo "Push all branches"
-git submodule foreach "git push -f $GIT_HOST:$GIT_USER/"'${path}.git'" HEAD:refs/heads/$PUSH_BRANCH"
+git submodule foreach "git push -f "'${url}'" HEAD:refs/heads/$PUSH_BRANCH"
 
 echo "Commit all component version changes"
 git add -u
